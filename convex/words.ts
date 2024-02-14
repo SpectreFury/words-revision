@@ -38,15 +38,3 @@ export const changeStatus = mutation({
     });
   },
 });
-
-export const temporaryStatus = mutation({
-  handler: async (ctx) => {
-    const words = await ctx.db.query("words").collect();
-    const wordIds = words.map((word) => word._id);
-    wordIds.map(async (id) => {
-      await ctx.db.patch(id, {
-        status: "review",
-      });
-    });
-  },
-});
