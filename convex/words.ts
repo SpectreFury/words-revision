@@ -20,8 +20,33 @@ export const saveWord = mutation({
       word: args.word,
       meaning: args.meaning,
       example: args.example,
+      status: "remembered",
     });
 
     return wordId;
+  },
+});
+
+export const changeStatus = mutation({
+  args: {
+    wordId: v.id("words"),
+    status: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.wordId, {
+      status: args.status,
+    });
+  },
+});
+
+export const temporaryStatus = mutation({
+  handler: async (ctx) => {
+    const words = await ctx.db.query("words").collect();
+    const wordIds = words.map((word) => word._id);
+    wordIds.map(async (id) => {
+      await ctx.db.patch(id, {
+        status: "review",
+      });
+    });
   },
 });

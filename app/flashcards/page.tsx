@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Flashcard from "./_components/flashcard";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";

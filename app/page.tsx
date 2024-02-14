@@ -26,11 +26,22 @@ import { Label } from "@/components/ui/label";
 import { api } from "@/convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectGroup,
+  SelectItem,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+} from "@/components/ui/select";
+import { Id } from "@/convex/_generated/dataModel";
 
 export type Word = {
+  _id: Id<"words">;
   word: string;
   meaning: string;
   example: string;
+  status: "remembered" | "forgotten" | "review";
 };
 
 const Home = () => {
@@ -43,6 +54,7 @@ const Home = () => {
   const [open, setOpen] = useState(false);
 
   const words = useQuery(api.words.getWords);
+  const changeStatus = useMutation(api.words.changeStatus);
 
   const router = useRouter();
 
@@ -131,6 +143,7 @@ const Home = () => {
                           <TableHead className="w-[150px]">Word</TableHead>
                           <TableHead>Meaning</TableHead>
                           <TableHead>Example Sentence</TableHead>
+                          <TableHead>Action</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -141,6 +154,34 @@ const Home = () => {
                             </TableCell>
                             <TableCell>{tableWord.meaning}</TableCell>
                             <TableCell>{tableWord.example}</TableCell>
+                            <TableCell>
+                              <Select
+                                defaultValue={tableWord.status}
+                                onValueChange={(value) =>
+                                  changeStatus({
+                                    wordId: tableWord._id as Id<"words">,
+                                    status: value,
+                                  })
+                                }
+                              >
+                                <SelectTrigger className="w-[180px]">
+                                  <SelectValue></SelectValue>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      <SelectItem value="remembered">
+                                        Remembered
+                                      </SelectItem>
+                                      <SelectItem value="forgotten">
+                                        Forgotten
+                                      </SelectItem>
+                                      <SelectItem value="review">
+                                        Review
+                                      </SelectItem>
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </SelectTrigger>
+                              </Select>
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
