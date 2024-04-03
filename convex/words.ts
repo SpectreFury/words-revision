@@ -9,6 +9,14 @@ export const getWords = query({
   },
 });
 
+export const getFlashcardWords = mutation({
+  handler: async (ctx) => {
+    const words = await ctx.db.query("words").collect();
+
+    return words;
+  },
+});
+
 export const saveWord = mutation({
   args: {
     word: v.string(),
